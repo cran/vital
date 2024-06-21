@@ -5,112 +5,88 @@
 #' @export
 arrange.fbl_vtl_ts <- function(.data, ...) {
   attr_data <- attributes(.data)
+  vvar <- vital_var_list(.data)
   build_vital_fable(NextMethod(),
     response = attr_data$response,
     distribution = attr_data$dist,
-    .age = attr_data$agevar,
-    .sex = attr_data$sexvar,
-    .deaths = attr_data$deathsvar,
-    .births = attr_data$birthsvar,
-    .population = attr_data$populationvar
+    vitals = vvar
   )
 }
 
 #' @export
 select.fbl_vtl_ts <- function(.data, ...) {
   attr_data <- attributes(.data)
+  vvar <- vital_var_list(.data)
   build_vital_fable(NextMethod(),
     response = attr_data$response,
     distribution = attr_data$dist,
-    .age = attr_data$agevar,
-    .sex = attr_data$sexvar,
-    .deaths = attr_data$deathsvar,
-    .births = attr_data$birthsvar,
-    .population = attr_data$populationvar
+    vitals = vvar
   )
 }
 
 #' @export
 transmute.fbl_vtl_ts <- function(.data, ...) {
   attr_data <- attributes(.data)
+  vvar <- vital_var_list(.data)
   build_vital_fable(NextMethod(),
     response = attr_data$response,
     distribution = attr_data$dist,
-    .age = attr_data$agevar,
-    .sex = attr_data$sexvar,
-    .deaths = attr_data$deathsvar,
-    .births = attr_data$birthsvar,
-    .population = attr_data$populationvar
+    vitals = vvar
   )
 }
 
 #' @exportS3Method dplyr::relocate
 relocate.fbl_vtl_ts <- function(.data, ...) {
   attr_data <- attributes(.data)
+  vvar <- vital_var_list(.data)
   build_vital_fable(NextMethod(),
     response = attr_data$response,
     distribution = attr_data$dist,
-    .age = attr_data$agevar,
-    .sex = attr_data$sexvar,
-    .deaths = attr_data$deathsvar,
-    .births = attr_data$birthsvar,
-    .population = attr_data$populationvar
+    vitals = vvar
   )
 }
 
 #' @export
 summarise.fbl_vtl_ts <- function(.data, ..., .groups = NULL) {
   attr_data <- attributes(.data)
+  vvar <- vital_var_list(.data)
   build_vital_fable(NextMethod(),
     response = attr_data$response,
     distribution = attr_data$dist,
-    .age = attr_data$agevar,
-    .sex = attr_data$sexvar,
-    .deaths = attr_data$deathsvar,
-    .births = attr_data$birthsvar,
-    .population = attr_data$populationvar
+    vitals = vvar
   )
 }
 
 #' @exportS3Method dplyr::dplyr_row_slice
 dplyr_row_slice.fbl_vtl_ts <- function(data, i, ..., preserve = FALSE) {
   attr_data <- attributes(data)
+  vvar <- vital_var_list(data)
   build_vital_fable(NextMethod(),
     response = attr_data$response,
     distribution = attr_data$dist,
-    .age = attr_data$agevar,
-    .sex = attr_data$sexvar,
-    .deaths = attr_data$deathsvar,
-    .births = attr_data$birthsvar,
-    .population = attr_data$populationvar
+    vitals = vvar
   )
 }
 
 #' @exportS3Method dplyr::dplyr_col_modify
 dplyr_col_modify.fbl_vtl_ts <- function(data, cols) {
   attr_data <- attributes(data)
+  vvar <- vital_var_list(data)
   build_vital_fable(NextMethod(),
     response = attr_data$response,
     distribution = attr_data$dist,
-    .age = attr_data$agevar,
-    .sex = attr_data$sexvar,
-    .deaths = attr_data$deathsvar,
-    .births = attr_data$birthsvar,
-    .population = attr_data$populationvar
+    vitals = vvar
   )
 }
 
 #' @exportS3Method dplyr::dplyr_reconstruct
 dplyr_reconstruct.fbl_vtl_ts <- function(data, template) {
   attr_data <- attributes(data)
+  vvar <- vital_var_list(data)
   build_vital_fable(NextMethod(),
     response = attr_data$response,
     distribution = attr_data$dist,
-    .age = attr_data$agevar,
-    .sex = attr_data$sexvar,
-    .deaths = attr_data$deathsvar,
-    .births = attr_data$birthsvar,
-    .population = attr_data$populationvar
+    vitals = vvar
   )
 }
 
@@ -118,14 +94,11 @@ dplyr_reconstruct.fbl_vtl_ts <- function(data, template) {
 group_by.fbl_vtl_ts <- function(.data, ..., .add = FALSE,
                                 .drop = group_by_drop_default(.data)) {
   attr_data <- attributes(.data)
+  vvar <- vital_var_list(.data)
   tmp <- build_vital_fable(NextMethod(),
     response = attr_data$response,
     distribution = attr_data$dist,
-    .age = attr_data$agevar,
-    .sex = attr_data$sexvar,
-    .deaths = attr_data$deathsvar,
-    .births = attr_data$birthsvar,
-    .population = attr_data$populationvar
+    vitals = vvar
   )
   tmp_class <- class(tmp)
   grouped_classes <- grepl("grouped", tmp_class)
@@ -136,14 +109,11 @@ group_by.fbl_vtl_ts <- function(.data, ..., .add = FALSE,
 #' @export
 ungroup.grouped_vital <- function(x, ...) {
   attr_data <- attributes(x)
+  vvar <- vital_var_list(x)
   build_vital_fable(NextMethod(),
     response = attr_data$response,
     distribution = attr_data$dist,
-    .age = attr_data$agevar,
-    .sex = attr_data$sexvar,
-    .deaths = attr_data$deathsvar,
-    .births = attr_data$birthsvar,
-    .population = attr_data$populationvar
+    vitals = vvar
   )
 }
 
@@ -168,30 +138,24 @@ dplyr_col_modify.grouped_vital <- dplyr_col_modify.fbl_vtl_ts
 #' @exportS3Method dplyr::dplyr_reconstruct
 dplyr_reconstruct.grouped_vital <- function(data, template) {
   attr_data <- attributes(data)
+  vvar <- vital_var_list(data)
   build_vital_fable(NextMethod(),
     response = attr_data$response,
     distribution = attr_data$dist,
-    .age = attr_data$agevar,
-    .sex = attr_data$sexvar,
-    .deaths = attr_data$deathsvar,
-    .births = attr_data$birthsvar,
-    .population = attr_data$populationvar
+    vitals = vvar
   )
 }
 
 #' @export
 `[.fbl_vtl_ts` <- function(x, i, j, drop = FALSE) {
   attr_data <- attributes(x)
+  vvar <- vital_var_list(x)
   res <- NextMethod()
   if (inherits(res, "tbl_ts")) {
     build_vital_fable(res,
       response = attr_data$response,
       distribution = attr_data$dist,
-      .age = attr_data$agevar,
-      .sex = attr_data$sexvar,
-      .deaths = attr_data$deathsvar,
-      .births = attr_data$birthsvar,
-      .population = attr_data$populationvar
+      vitals = vvar
     )
   } else {
     res
