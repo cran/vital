@@ -8,7 +8,12 @@ augment.mdl_vtl_df <- function(x, ...) {
     as_tibble(x),
     dplyr::across(all_of(mbl_vars), function(x) lapply(x, augment, ...))
   )
-  x <- pivot_longer(x, all_of(mbl_vars), names_to = ".model", values_to = ".aug")
+  x <- pivot_longer(
+    x,
+    all_of(mbl_vars),
+    names_to = ".model",
+    values_to = ".aug"
+  )
   unnest_tsbl(x, ".aug", parent_key = c(kv, ".model")) |>
     as_tsibble(index = index, key = all_of(c(agevar, kv, ".model"))) |>
     as_vital(.age = agevar, reorder = TRUE)
@@ -16,11 +21,11 @@ augment.mdl_vtl_df <- function(x, ...) {
 
 #' @export
 augment.mdl_vtl_ts <- function(x, ...) {
-  out <- response(x) |>
-    mutate(
-      .fitted = x$fit$fitted[[".fitted"]],
-      .resid = x$fit$fitted[[".resid"]],
-      .innov = x$fit$fitted[[".innov"]]
+  x_response <- response(x)
+  out <- x_response |>
+    left_join(
+      x$fit$fitted,
+      by = c(age_var(x_response), index_var(x_response))
     )
   # Back transform fitted value
   fits <- as.list(out)[".fitted"]
@@ -38,9 +43,13 @@ fitted.mdl_vtl_df <- function(object, ...) {
 }
 
 #' @export
-residuals.mdl_vtl_df <- function(object, type = c("innovation", "response"), ...) {
+residuals.mdl_vtl_df <- function(
+  object,
+  type = c("innovation", "response"),
+  ...
+) {
   type <- match.arg(type)
-  if(type == "innovation") {
+  if (type == "innovation") {
     augment(object) |> transmute(.innov)
   } else {
     augment(object) |> transmute(.resid)
@@ -58,8 +67,18 @@ response.mdl_vtl_ts <- function(object, ...) {
   bt <- map(object$transformation, invert_transformation)
   resp <- map2(bt, resp, function(bt, fit) bt(fit))
   out <- object$data[c(index_var(object$data), vvar$age)]
-  out[if (length(resp) == 1)
-    ".response"
-    else mv] <- resp
-  out
+  out[
+    if (length(resp) == 1) {
+      ".response"
+    } else {
+      mv
+    }
+  ] <- resp
+  # Fix key
+  as_vital(
+    out,
+    key = vvar$age,
+    index = index_var(object$data),
+    .age = vvar$age
+  )
 }

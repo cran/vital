@@ -50,12 +50,12 @@ regression, while \code{smooth_spline()} uses penalized regression splines.
 }
 \examples{
 library(dplyr)
-aus_mortality |>
-	filter(State == "Victoria", Sex == "female", Year > 2000) |>
-	smooth_mortality(Mortality)
-aus_fertility |>
- filter(Year > 2000) |>
-	smooth_fertility(Fertility)
+norway_mortality |>
+  filter(Sex == "Female", Year > 2000) |>
+  smooth_mortality(Mortality)
+norway_fertility |>
+  filter(Year > 2000) |>
+  smooth_fertility(Fertility)
 }
 \references{
 Hyndman, R.J., and Ullah, S. (2007) Robust forecasting of

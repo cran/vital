@@ -1,4 +1,4 @@
-#' Compute period lifetables from age-specific mortality rates
+#' Compute period life tables from age-specific mortality rates
 #'
 #' All available years and ages are included in the tables.
 #' $qx = mx/(1 + ((1-ax) * mx))$ as per Chiang (1984).
@@ -16,30 +16,41 @@
 #' @references Preston, S.H., Heuveline, P., and Guillot, M. (2001) *Demography: measuring and modeling population processes*. Blackwell
 #'
 #' @examples
-#' # Compute Victorian life table for females in 2003
-#' aus_mortality |>
-#'   dplyr::filter(Code == "VIC", Sex == "female", Year == 2003) |>
+#' # Compute Norwegian life table for females in 2003
+#' norway_mortality |>
+#'   dplyr::filter(Sex == "Female", Year == 2003) |>
 #'   life_table()
 #' @export
 
 life_table <- function(.data, mortality) {
+  # Mortality variable
+  if (!missing(mortality)) {
+    mortality <- as_name(substitute(mortality))
+  } else {
+    mortality <- find_measure(.data, c("mx", "mortality", "rate"))
+  }
+  if (is.na(mortality) | !(mortality %in% colnames(.data))) {
+    vvar <- vital_var_list(.data)
+    if (!is.null(vvar$deaths) & !is.null(vvar$population)) {
+      # Compute Mx from deaths and population
+      .data$Mx <- .data[[vvar$deaths]] / .data[[vvar$population]]
+      mortality <- "Mx"
+    } else {
+      stop("Mortality variable not found in data")
+    }
+  }
   # Index variable
   index <- tsibble::index_var(.data)
   # Keys including age
   keys <- tsibble::key_vars(.data)
 
   age <- age_var(.data)
-  if(is.null(age)) {
+  if (is.null(age)) {
     stop("No age variable found")
   }
   sex <- sex_var(.data)
-  if(is.null(sex)) {
+  if (is.null(sex)) {
     sex <- "None"
-  }
-  if (!missing(mortality)) {
-    mortality <- {{ mortality }}
-  } else {
-    mortality <- find_measure(.data, c("mx", "mortality", "rate"))
   }
 
   # Drop Age as a key and nest results
@@ -48,16 +59,28 @@ life_table <- function(.data, mortality) {
 
   # Create life table for each sub-tibble and row-bind them.
   if (sex == "None") {
-    out <- purrr::map2(.data[["data"]], "None", lt, age = age, mortality = mortality)
+    out <- purrr::map2(
+      .data[["data"]],
+      "None",
+      lt,
+      age = age,
+      mortality = mortality
+    )
   } else {
-    out <- purrr::map2(.data[["data"]], .data[[sex]], lt, age = age, mortality = mortality)
+    out <- purrr::map2(
+      .data[["data"]],
+      .data[[sex]],
+      lt,
+      age = age,
+      mortality = mortality
+    )
   }
   .data$lt <- out
   .data$data <- NULL
-  tibble::as_tibble(.data) |>
+  tsibble::as_tibble(.data) |>
     tidyr::unnest(cols = lt) |>
     tsibble::as_tsibble(index = index, key = tidyselect::all_of(keys)) |>
-    as_vital(.age = age, .sex=sex, reorder = TRUE)
+    as_vital(.age = age, .sex = sex, reorder = TRUE)
 }
 
 # This is a revised version of the demography::lt function.
@@ -118,7 +141,8 @@ lt <- function(dt, sex, age, mortality) {
       TRUE ~ 1.3565 + (mx[1] < 0.107) * (0.230 - 2.167 * mx[1])
     )
     ax <- c(a0, a1, rep(2.6, nn - 3L), Inf)
-  } else { # agegroup==5 and startage > 0
+  } else {
+    # agegroup==5 and startage > 0
     ax <- c(rep(2.6, nn - 1), Inf)
     nx[1L] <- agegroup
   }
@@ -134,7 +158,8 @@ lt <- function(dt, sex, age, mortality) {
   }
   # Now Lx, Tx and ex
   Lx <- nx * lx - dx * (nx - ax)
-  Lx[nn] <- if_else(mx[nn] == 0, 0, lx[nn]/mx[nn])
+  Lx[nn] <- if_else(mx[nn] == 0, 0, lx[nn] / mx[nn])
+  Lx[is.na(Lx)] <- 0
   Tx <- rev(cumsum(rev(Lx)))
   ex <- Tx / lx
   # Finally compute rx
@@ -147,16 +172,29 @@ lt <- function(dt, sex, age, mortality) {
   }
   if (agegroup == 5L) {
     rx <- c(
-      0, (Lx[1] + Lx[2]) / 5 * lx[1], Lx[3] / (Lx[1] + Lx[2]),
-      Lx[4:(nn - 1)] / Lx[3:(nn - 2)], Tx[nn] / Tx[nn - 1]
+      0,
+      (Lx[1] + Lx[2]) / 5 * lx[1],
+      Lx[3] / (Lx[1] + Lx[2]),
+      Lx[4:(nn - 1)] / Lx[3:(nn - 2)],
+      Tx[nn] / Tx[nn - 1]
     )
   }
   # Return the results in a tibble
-  result <- tibble::tibble(mx = mx, qx = qx, lx = lx, dx = dx, Lx = Lx, Tx = Tx,
-    ex = ex, rx = rx, nx = nx, ax = ax) |>
-    mutate(Age = dt[[age]])
+  result <- tibble::tibble(
+    mx = mx,
+    qx = qx,
+    lx = lx,
+    dx = dx,
+    Lx = Lx,
+    Tx = Tx,
+    ex = ex,
+    rx = rx,
+    nx = nx,
+    ax = ax
+  ) |>
+    mutate(!!age := dt[[age]])
 
   return(result)
 }
 
-globalVariables(c("agevar","sexvar"))
+globalVariables(c("agevar", "sexvar"))

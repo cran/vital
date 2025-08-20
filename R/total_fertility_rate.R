@@ -9,13 +9,13 @@
 #' @return A vital object with total fertility in column `tfr`.
 #'
 #' @examples
-#' # Compute Australian total fertility rates over time
-#' aus_fertility |>
+#' # Compute Norwegian total fertility rates over time
+#' norway_fertility |>
 #'   total_fertility_rate()
 #' @author Rob J Hyndman
 #' @export
 
-total_fertility_rate <- function(.data,  fertility) {
+total_fertility_rate <- function(.data, fertility) {
   # Index variable
   index <- tsibble::index_var(.data)
   # Keys including age
@@ -26,7 +26,7 @@ total_fertility_rate <- function(.data,  fertility) {
 
   # Find age and fertility columns
   age <- vital_names$age
-  if(is.null(age)) {
+  if (is.null(age)) {
     stop("No age variable identified")
   }
   col_names <- col_names[col_names != age]
@@ -42,15 +42,24 @@ total_fertility_rate <- function(.data,  fertility) {
   .data[[age]] <- NULL
 
   # Compute tfr for each sub-tibble
-  out <- purrr::map_dfr(.data[["lst_data"]], tfr, fertility = fertility)
+  out <- purrr::map_dfr(
+    .data[["lst_data"]],
+    tfr,
+    fertility = fertility
+  )
   out[[index]] <- .data[[index]]
-  out <- out[col_names]
   out |>
     as_tsibble(index = index, key = all_of(keys_noage)) |>
-    as_vital(.sex=vital_names$sex, .births=vital_names$births,
-             .population = vital_names$population)
+    as_vital(
+      .sex = vital_names$sex,
+      .births = vital_names$births,
+      .population = vital_names$population,
+      reorder = TRUE
+    )
 }
 
 tfr <- function(dt, fertility) {
-  dt |> dplyr::summarise(dplyr::across(is.numeric, sum))
+  tibble(
+    tfr = sum(dt[[fertility]], na.rm = TRUE)
+  )
 }

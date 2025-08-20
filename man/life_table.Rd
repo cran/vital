@@ -2,7 +2,7 @@
 % Please edit documentation in R/life_table.R
 \name{life_table}
 \alias{life_table}
-\title{Compute period lifetables from age-specific mortality rates}
+\title{Compute period life tables from age-specific mortality rates}
 \usage{
 life_table(.data, mortality)
 }
@@ -20,9 +20,9 @@ $qx = mx/(1 + ((1-ax) * mx))$ as per Chiang (1984).
 Warning: the code has only been tested for data based on single-year age groups.
 }
 \examples{
-# Compute Victorian life table for females in 2003
-aus_mortality |>
-  dplyr::filter(Code == "VIC", Sex == "female", Year == 2003) |>
+# Compute Norwegian life table for females in 2003
+norway_mortality |>
+  dplyr::filter(Sex == "Female", Year == 2003) |>
   life_table()
 }
 \references{

@@ -19,11 +19,10 @@ Produces a plot showing forecasts obtained from a model applied to a vital objec
 }
 \examples{
 library(ggplot2)
-aus_mortality |>
- dplyr::filter(State == "Victoria") |>
- model(ave = FMEAN(Mortality)) |>
- forecast(h = 10) |>
- autoplot() + scale_y_log10()
+norway_mortality |>
+  model(ave = FMEAN(Mortality)) |>
+  forecast(h = 10) |>
+  autoplot() + scale_y_log10()
 
 }
 \author{

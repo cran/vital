@@ -33,8 +33,8 @@
 #' reported can be controlled using the `progressr` package.
 #' @return A mable containing the fitted models.
 #' @examples
-#' aus_mortality |>
-#'   dplyr::filter(State == "Victoria", Sex == "female") |>
+#' norway_mortality |>
+#'   dplyr::filter(Sex == "Female") |>
 #'   model(
 #'     naive = FNAIVE(Mortality),
 #'     mean = FMEAN(Mortality)
@@ -48,8 +48,11 @@ model.vital <- function(.data, ..., .safely = TRUE) {
     abort("At least one model must be specified.")
   }
   if (!all(is_mdl <- purrr::map_lgl(models, inherits, "mdl_defn"))) {
-    abort(sprintf("Model definition(s) incorrectly created: %s
-Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
+    abort(sprintf(
+      "Model definition(s) incorrectly created: %s
+Check that specified model(s) are model definitions.",
+      nm[which(!is_mdl)[1]]
+    ))
   }
 
   # Keys including age
@@ -59,8 +62,8 @@ Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
   # Drop Age as a key
   kv <- keys[!(keys %in% c(agevar, "Age", "AgeGroup"))]
   # Make sure Sex is first key (so it can be identified inside estimate_progress)
-  if(!is.null(sexvar)) {
-    if(!(sexvar %in% kv)) {
+  if (!is.null(sexvar)) {
+    if (!(sexvar %in% kv)) {
       stop("Sex should be one of the keys")
     }
     kv <- c(sexvar, kv[kv != sexvar])
@@ -69,8 +72,10 @@ Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
   num_key <- n_keys(.data) / n_ages
   num_mdl <- length(models)
   num_est <- num_mdl * num_key
-  p <- progressr::progressor(num_est)
-
+  progress <- requireNamespace("progressr", quietly = TRUE)
+  if (progress) {
+    p <- progressr::progressor(num_est)
+  }
   .data <- nest_keys(.data, "lst_data")
 
   if (.safely) {
@@ -86,22 +91,19 @@ Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
   }
 
   estimate_progress <- function(dt, keys, mdl) {
-    if(!is.null(sexvar)) {
+    if (!is.null(sexvar)) {
       sex <- keys[1]
     } else {
       sex <- NULL
     }
-    if(!is.null(mdl$extra$coherent)) {
-      if("geometric_mean" %in% keys & mdl$extra$coherent) {
-        # No need to make the model stationary
-        mdl$extra$coherent <- FALSE
-      } else {
-        # Make model stationary
-        mdl$extra$coherent <- TRUE
-      }
+    if (!is.null(mdl$extra$coherent)) {
+      mdl$extra$coherent <- !(mdl$extra$coherent &
+        ("geometric_mean" %in% keys | "mean" %in% keys))
     }
     out <- estimate(dt, mdl, sex)
-    p()
+    if (progress) {
+      p()
+    }
     out
   }
 
@@ -122,21 +124,26 @@ Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
   } else {
     eval_models <- function(models, lst_data, keyvars) {
       vars <- colnames(keyvars)
-      keyvars <- keyvars |> t() |> as.data.frame() |> as_tibble()
+      keyvars <- keyvars |>
+        t() |>
+        as.data.frame() |>
+        as_tibble()
       purrr::map(models, function(model) {
         purrr::map2(lst_data, keyvars, estimate_progress, model)
       })
     }
   }
-  fits <- eval_models(models, .data[["lst_data"]], .data[,kv])
+  fits <- eval_models(models, .data[["lst_data"]], .data[, kv])
   names(fits) <- ifelse(nchar(names(models)), names(models), nm)
-
   # Report errors if estimated safely
   if (.safely) {
     fits <- purrr::imap(fits, function(x, nm) {
       err <- purrr::map_lgl(x, function(x) !is.null(x[["error"]]))
       if ((tot_err <- sum(err)) > 0) {
-        err_msg <- table(purrr::map_chr(x[err], function(x) x[["error"]][["message"]]))
+        err_msg <- table(purrr::map_chr(
+          x[err],
+          function(x) x[["error"]][["message"]]
+        ))
         rlang::warn(
           sprintf(
             "%i error%s encountered for %s\n%s\n",
@@ -165,7 +172,11 @@ Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
 
 require_package <- function(pkg) {
   if (!requireNamespace(pkg, quietly = TRUE)) {
-    abort(sprintf("The `%s` package must be installed to use this functionality. It can be installed with install.packages(\"%s\")", pkg, pkg))
+    abort(sprintf(
+      "The `%s` package must be installed to use this functionality. It can be installed with install.packages(\"%s\")",
+      pkg,
+      pkg
+    ))
   }
 }
 
@@ -196,21 +207,34 @@ nest_keys <- function(.data, nm = "data") {
   ordered <- is_ordered(.data)
   regular <- is_regular(.data)
   attr_data <- vital_var_list(.data)
-  out[[nm]] <- purrr::map(row_indices, function(x, i, j) {
-    out <- if (is.null(j)) x[i, ] else x[i, j]
-    tsibble::build_tsibble_meta(
-      out,
-      key_data = tibble::as_tibble(list(.rows = list(seq_along(i)))),
-      index = idx, index2 = idx2, ordered = ordered,
-      interval = if (length(i) > 1 && regular) tsibble::interval_pull(out[[idx]]) else tsibble::interval(.data)
-    ) |>
-      as_vital(.age = attr_data$age,
-               .sex = attr_data$sex,
-               .births = attr_data$births,
-               .deaths = attr_data$deaths,
-               .population = attr_data$population)
-  }, x = tibble::as_tibble(.data), j = col_nest)
-  tibble::as_tibble(out)
+  out[[nm]] <- purrr::map(
+    row_indices,
+    function(x, i, j) {
+      out <- if (is.null(j)) x[i, ] else x[i, j]
+      tsibble::build_tsibble_meta(
+        out,
+        key_data = tsibble::as_tibble(list(.rows = list(seq_along(i)))),
+        index = idx,
+        index2 = idx2,
+        ordered = ordered,
+        interval = if (length(i) > 1 && regular) {
+          tsibble::interval_pull(out[[idx]])
+        } else {
+          tsibble::interval(.data)
+        }
+      ) |>
+        as_vital(
+          .age = attr_data$age,
+          .sex = attr_data$sex,
+          .births = attr_data$births,
+          .deaths = attr_data$deaths,
+          .population = attr_data$population
+        )
+    },
+    x = tsibble::as_tibble(.data),
+    j = col_nest
+  )
+  tsibble::as_tibble(out)
 }
 
 list_of_models <- function(x = list()) {
@@ -220,7 +244,9 @@ list_of_models <- function(x = list()) {
 #' @export
 estimate.vital <- function(.data, .model, sex, ...) {
   if (!inherits(.model, "mdl_defn")) {
-    abort("Model definition incorrectly created. Check that specified model(s) are model definitions.")
+    abort(
+      "Model definition incorrectly created. Check that specified model(s) are model definitions."
+    )
   }
   .model$stage <- "estimate"
   .model$add_data(.data)
@@ -233,31 +259,47 @@ estimate.vital <- function(.data, .model, sex, ...) {
   deathsvar <- vvar$deaths
   birthsvar <- vvar$births
   age <- .data[[agevar]]
-  if(!is.null(popvar))
+  if (!is.null(popvar)) {
     pop <- .data[[popvar]]
-  if(!is.null(deathsvar))
+  }
+  if (!is.null(deathsvar)) {
     deaths <- .data[[deathsvar]]
-  if(!is.null(birthsvar))
+  }
+  if (!is.null(birthsvar)) {
     births <- .data[[birthsvar]]
-  resp <- map(parsed$expressions, eval_tidy,
-              data = .data,
-              env = .model$specials
+  }
+  resp <- map(
+    parsed$expressions,
+    eval_tidy,
+    data = .data,
+    env = .model$specials
   )
   .data <- unclass(.data)[index_var(.data)]
   .data[map_chr(parsed$expressions, rlang::expr_name)] <- resp
   .data[[agevar]] <- age
-  if(!is.null(popvar))
+  if (!is.null(popvar)) {
     .data[[popvar]] <- pop
-  if(!is.null(deathsvar))
+  }
+  if (!is.null(deathsvar)) {
     .data[[deathsvar]] <- deaths
-  if(!is.null(birthsvar))
+  }
+  if (!is.null(birthsvar)) {
     .data[[birthsvar]] <- births
-  attributes(.data) <- c(attributes(.data), .dt_attr[setdiff(
-    names(.dt_attr),
-    names(attributes(.data))
-  )])
+  }
+  attributes(.data) <- c(
+    attributes(.data),
+    .dt_attr[setdiff(
+      names(.dt_attr),
+      names(attributes(.data))
+    )]
+  )
   fit <- eval_tidy(
-    expr(.model$train(.data = .data, sex=sex, specials = parsed$specials, !!!.model$extra))
+    expr(.model$train(
+      .data = .data,
+      sex = sex,
+      specials = parsed$specials,
+      !!!.model$extra
+    ))
   )
   .model$remove_data()
   .model$stage <- NULL
@@ -266,10 +308,16 @@ estimate.vital <- function(.data, .model, sex, ...) {
 
 # Same as fabletools function but with different class
 new_model <- function(fit = NULL, model, data, response, transformation) {
-  structure(list(
-    fit = fit, model = model, data = data, response = response,
-    transformation = transformation
-  ), class = c("mdl_vtl_ts", "mdl_ts"))
+  structure(
+    list(
+      fit = fit,
+      model = model,
+      data = data,
+      response = response,
+      transformation = transformation
+    ),
+    class = c("mdl_vtl_ts", "mdl_ts")
+  )
 }
 
 globalVariables(c(".rows", "data", "calc", "sex"))

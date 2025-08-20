@@ -45,8 +45,8 @@ default, although many other options are available. Missing rates are set to
 the geometric mean rate for the relevant age.
 }
 \examples{
-lc <- aus_mortality |>
-  dplyr::filter(State == "Victoria", Sex == "female") |>
+lc <- norway_mortality |>
+  dplyr::filter(Sex == "Female") |>
   model(lee_carter = LC(log(Mortality)))
 report(lc)
 autoplot(lc)
@@ -65,6 +65,9 @@ Lee, R D, and Carter, L R (1992) Modeling and forecasting US mortality.
 
 Lee R D, and Miller T (2001). Evaluating the performance of the Lee-Carter
 method for forecasting mortality. \emph{Demography}, 38(4), 537–549.
+}
+\seealso{
+\code{\link[=LC2]{LC2()}}, \code{\link[=FDM]{FDM()}}
 }
 \author{
 Rob J Hyndman

@@ -16,9 +16,9 @@ FDM(formula, order = 6, ts_model_fn = fable::ARIMA, coherent = FALSE, ...)
 model that works with the fable package is ok. Default is \code{\link[fable:ARIMA]{fable::ARIMA()}}.}
 
 \item{coherent}{If TRUE, fitted models are stationary, other than for the case of
-a key variable taking the value \code{geometric_mean}. This is designed to work with
-vitals produced using \code{\link{make_pr}()}. Default is FALSE. It only works
-when \code{ts_model_fn} is \code{\link[fable]{ARIMA}()}.}
+a key variable taking the value \code{geometric_mean} or \code{mean}. This is designed to work with
+vitals produced using \code{\link{make_pr}()} and \code{\link{make_sd}}.
+Default is FALSE. It only works when \code{ts_model_fn} is \code{\link[fable]{ARIMA}()}.}
 
 \item{...}{Not used.}
 }
@@ -43,6 +43,7 @@ Hyndman, R. J., and Ullah, S. (2007) Robust forecasting of
 mortality and fertility rates: a functional data approach.
 \emph{Computational Statistics & Data Analysis}, 5, 4942-4956.
 \url{https://robjhyndman.com/publications/funcfor/}
+
 Hyndman, R. J., Booth, H., & Yasmeen, F. (2013). Coherent mortality
 forecasting: the product-ratio method with functional time series models.
 \emph{Demography}, 50(1), 261-283.
