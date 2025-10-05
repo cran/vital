@@ -1,5 +1,5 @@
 Package: vital
-Version: 2.0.0
+Version: 2.0.1
 Type: Package
 Title: Tidy Analysis Tools for Mortality, Fertility, Migration and
         Population Data
@@ -15,7 +15,7 @@ Authors@R: c(
   )
 Depends: R (>= 4.1.0)
 Imports: cobs, distributional, dplyr, fable, fabletools (>= 0.3.3),
-        ggplot2, HMDHFDplus (>= 2.0.3), mgcv, MortalityLaws, patchwork,
+        ggplot2, HMDHFDplus (>= 2.0.8), mgcv, MortalityLaws, patchwork,
         purrr, rlang, StMoMo, tibble, tidyr, tidyselect, tsibble, vctrs
 Suggests: demography, feasts, future, future.apply, knitr, progressr,
         rmarkdown, testthat (>= 3.0.0)
@@ -24,11 +24,11 @@ URL: https://pkg.robjhyndman.com/vital/,
         https://github.com/robjhyndman/vital
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 BugReports: https://github.com/robjhyndman/vital/issues
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2025-08-20 06:26:44 UTC; hyndman
+Packaged: 2025-10-05 21:45:48 UTC; robjhyndman
 Author: Rob Hyndman [aut, cre, cph] (ORCID:
     <https://orcid.org/0000-0002-2140-5352>),
   Sixian Tang [aut] (ORCID: <https://orcid.org/0000-0002-7292-462X>),
@@ -37,4 +37,4 @@ Author: Rob Hyndman [aut, cre, cph] (ORCID:
     <https://orcid.org/0000-0001-6729-7695>)
 Maintainer: Rob Hyndman <Rob.Hyndman@monash.edu>
 Repository: CRAN
-Date/Publication: 2025-08-20 07:40:02 UTC
+Date/Publication: 2025-10-05 22:10:02 UTC
