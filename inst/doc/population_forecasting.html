@@ -150,7 +150,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; }
 div.csl-bib-body { }
 div.csl-entry {
 clear: both;
-margin-bottom: 0em;
 }
 .hanging div.csl-entry {
 margin-left:2em;
@@ -372,9 +371,8 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
 <span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2025</span>)</span></code></pre></div>
 <p>The vital package can be used for stochastic population forecasting
-with coherent components. This is based on the papers by <span class="citation">Hyndman and Booth (2008)</span> and <span class="citation">Hyndman, Booth, and Yasmeen (2013)</span>. Following
-<span class="citation">Hyndman and Booth (2008)</span>, we use the
-following demographic growth-balance equations: <span class="math display">\[
+with coherent components. This is based on the papers by <span class="citation">Hyndman and Booth (2008)</span> and <span class="citation">Hyndman et al. (2013)</span>. Following <span class="citation">Hyndman and Booth (2008)</span>, we use the following
+demographic growth-balance equations: <span class="math display">\[
 P_t(x) = P_{t-1}(x) + B_t(x) - D_t(x) + G_t(x)
 \]</span> where</p>
 <ul>
@@ -400,9 +398,9 @@ used for each component to demonstrate the flexibility of the package,
 but other models can be used as well.</p>
 <div id="mortality-model" class="section level2">
 <h2>Mortality model</h2>
-<p>We use a coherent functional data model <span class="citation">(Hyndman, Booth, and Yasmeen 2013)</span> for the log
-mortality rates. To ensure coherence, we compute the geometric mean of
-the sex-specific mortality rates and the corresponding ratios, using the
+<p>We use a coherent functional data model <span class="citation">(Hyndman et al. 2013)</span> for the log mortality
+rates. To ensure coherence, we compute the geometric mean of the
+sex-specific mortality rates and the corresponding ratios, using the
 <code>make_pr()</code> function. The data are smoothed first, and 6
 components are used by default in each FDM, although only the first two
 are plotted here.</p>
@@ -501,7 +499,7 @@ interval.</p>
 </div>
 <div id="references" class="section level2 unnumbered">
 <h2 class="unnumbered">References</h2>
-<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
+<div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-HB08" class="csl-entry">
 Hyndman, Rob J, and Heather Booth. 2008. <span>“Stochastic Population
 Forecasts Using Functional Data Models for Mortality, Fertility and

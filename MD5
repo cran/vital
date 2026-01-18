@@ -1,6 +1,6 @@
-d3df68de65894d817bf28c889ef3fa2b *DESCRIPTION
+168982843f5420f228ec04f2e6433119 *DESCRIPTION
 4cc71c323631487e424bc27c6d09a2b0 *NAMESPACE
-cdb77ed967e271668d4e1f133c958fc6 *NEWS.md
+8fb2c06cdadfd7451d6fb13d992a0321 *NEWS.md
 92a85e90053d72fd361c96116087b83f *R/FDM.R
 cc0e64750f28f9878ff7e76072379db6 *R/LC.R
 f43e328ec42db417dda67b4a12d198c1 *R/STMF.R
@@ -31,7 +31,7 @@ c125830c2787ec0cbdafa6f5c2de12d2 *R/net_migration.R
 3806f0d75f77ac8786a9312b7dc53a9b *R/norway.R
 f7aad00a7e9290e147e651adc355ae59 *R/parse.R
 555bc7cd21834c36db1159151c5d4cef *R/popsim.R
-7ab03d56df0e41013fec8f7c2a60a991 *R/smooth.R
+593804b8382aea0d45998143aa64bb82 *R/smooth.R
 30ed3a8b25a6ed31c3e24f2e9d699ef5 *R/smooth_mortality_law.R
 52a8f5b423bdc904cc5b7e6edd92ca04 *R/sysdata.rda
 9c877d8071623464c693baf16345fad0 *R/total_fertility_rate.R
@@ -40,17 +40,17 @@ f7aad00a7e9290e147e651adc355ae59 *R/parse.R
 3d453e325eeb27f626375eef70641c28 *R/vital.R
 c0b0be869ddfb1e1d0d74ab9195ead3a *R/vital_package.R
 f12c183b4d50d2c2f1c29484add0d709 *R/vital_vars.R
-6a55a3af64b87fa26a562c101b1c7cd4 *README.md
-3fc2c1e944414b075cb8e9cbab9e14cd *build/vignette.rds
+1708f1a55fefb4ccef341152dd88a41a *README.md
+bc47c004ab95a1628c7d4baa3f8b5fbf *build/vignette.rds
 331ee9ef240079fd149db5549446131f *data/norway_births.rda
 82b5a05e2c747c9d78d2c00bb92d9ba0 *data/norway_fertility.rda
 5e088ba3265251283cf3eb30ef60250f *data/norway_mortality.rda
 f4489cac4c8cd713223fabb346a2c6f1 *inst/doc/intro.R
-34c2e840b53faf4520c5f8eaa44278df *inst/doc/intro.Rmd
-5bedcaea81c17902e37bd2adcc13ea50 *inst/doc/intro.html
+5000f41ae95e9c2f14db7e2e1b9444e6 *inst/doc/intro.Rmd
+8a7a2a38d85d4509bb466a4f2ce227ba *inst/doc/intro.html
 9f787ea9e40d34630e4094866fe36684 *inst/doc/population_forecasting.R
 00e19ace0817002605e8539b93750b67 *inst/doc/population_forecasting.Rmd
-d2239973f83d0a6a4e7459f834356a8e *inst/doc/population_forecasting.html
+2c1ddf521862cc4d14d6f6a6ff671ea1 *inst/doc/population_forecasting.html
 0413de6e3e29c71a17071e4c01337326 *man/FDM.Rd
 27bc6bb5bd53cda3e003e0246a30a938 *man/FMEAN.Rd
 005be387cb3c3c06ec5fb9b0a19e2b13 *man/FNAIVE.Rd
@@ -75,7 +75,7 @@ ef400a69ef09716659142574f28136fa *man/figures/README-lc2-1.png
 60d87f43570dcb7cf3ee806eb11acc8b *man/figures/README-lc3-1.png
 bebb6d0f40a574da964a1b191c5cb861 *man/figures/README-pyramid-1.png
 bfb22814b4df5d7127605e24f2fbd46d *man/figures/README-smoothing-1.png
-724dd964d4ca016235b142bed343d219 *man/figures/vital-hex.png
+2cfa2f0220619d7760f817896fd3a827 *man/figures/vital-hex.png
 2961cea4286228265de0494554692215 *man/forecast.Rd
 d038789534d334b1c3a4b8db1a837e2f *man/generate.Rd
 2216a6bd4fc791c5240511c4fb210bd7 *man/generate_population.Rd
@@ -128,6 +128,6 @@ dd81d1efe89d9ebfe840d805f8f4c45d *tests/testthat/test-smooth-mortality-law.R
 6f194f68f47e2642f8e886895d8c2fe6 *tests/testthat/test-smooth.R
 bdc5f7808cfc079f4cbf1c7e13d7c250 *tests/testthat/test-stmf.R
 f97f10b13de88e5e6a45a415ef50844c *tests/testthat/test_STMOMO.R
-34c2e840b53faf4520c5f8eaa44278df *vignettes/intro.Rmd
+5000f41ae95e9c2f14db7e2e1b9444e6 *vignettes/intro.Rmd
 00e19ace0817002605e8539b93750b67 *vignettes/population_forecasting.Rmd
 51f5ca73ca70fde4502fb7a0995a8244 *vignettes/refs.bib

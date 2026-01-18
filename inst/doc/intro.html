@@ -150,7 +150,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; }
 div.csl-bib-body { }
 div.csl-entry {
 clear: both;
-margin-bottom: 0em;
 }
 .hanging div.csl-entry {
 margin-left:2em;
@@ -367,7 +366,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 <p>The goal of vital is to allow analysis of demographic data using tidy
-tools. It works with other <a href="https://www.tidyverse.org">tidyverse
+tools. It works with other <a href="https://tidyverse.org">tidyverse
 packages</a> such as <a href="https://dplyr.tidyverse.org">dplyr</a> and
 <a href="https://ggplot2.tidyverse.org">ggplot2</a>. It also works with
 the <a href="https://tidyverts.org">tidyverts</a> packages, <a href="https://tsibble.tidyverts.org">tsibble</a> and <a href="https://fable.tidyverts.org">fable</a>.</p>
@@ -520,12 +519,12 @@ we have chosen to plot only the first three.</p>
 </div>
 <div id="coherent-functional-data-models" class="section level2">
 <h2>Coherent functional data models</h2>
-<p>A coherent functional data model <span class="citation">(Hyndman,
-Booth, and Yasmeen 2013)</span>, is obtained by first computing the
-sex-products and sex-ratios of the smoothed mortality data. Then a
-functional data model is fitted to the smoothed data, forecasts are
-obtained, and the product/ratio transformation is reversed. The
-following code shows the steps.</p>
+<p>A coherent functional data model <span class="citation">(Hyndman et
+al. 2013)</span>, is obtained by first computing the sex-products and
+sex-ratios of the smoothed mortality data. Then a functional data model
+is fitted to the smoothed data, forecasts are obtained, and the
+product/ratio transformation is reversed. The following code shows the
+steps.</p>
 <div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a>fdm_coherent <span class="ot">&lt;-</span> nor <span class="sc">|&gt;</span></span>
 <span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a>  <span class="fu">smooth_mortality</span>(Mortality) <span class="sc">|&gt;</span></span>
 <span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a>  <span class="fu">make_pr</span>(.smooth) <span class="sc">|&gt;</span></span>
@@ -542,10 +541,10 @@ when applied to the sex-ratios.</p>
 </div>
 <div id="references" class="section level2 unnumbered">
 <h2 class="unnumbered">References</h2>
-<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
+<div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-chiang" class="csl-entry">
 Chiang, Chin Long. 1984. <em>The Life Table and Its Applications</em>.
-Malabar: Robert E Krieger Publishing Company.
+Robert E Krieger Publishing Company.
 </div>
 <div id="ref-hby" class="csl-entry">
 Hyndman, Rob J, Heather Booth, and Farah Yasmeen. 2013. <span>“Coherent
